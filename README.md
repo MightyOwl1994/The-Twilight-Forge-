@@ -56,6 +56,8 @@ You can provide player input in **either** of two ways:
 - Inline text with `--player-input`
 - A text file with `--player-input-file`
 
+`build-packet` requires **exactly one** of those options.
+
 ```bash
 rp-foundry build-packet \
   --campaign example_campaign \

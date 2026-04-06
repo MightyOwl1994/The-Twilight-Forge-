@@ -123,11 +123,11 @@ def build_parser() -> argparse.ArgumentParser:
     input_group = packet_parser.add_mutually_exclusive_group(required=True)
     input_group.add_argument(
         "--player-input",
-        help="Raw player input text (example: --player-input \"I interrogate the courier\")",
+        help="Raw player input text (use this OR --player-input-file). Example: --player-input \"I interrogate the courier\"",
     )
     input_group.add_argument(
         "--player-input-file",
-        help="Path to player input text file (example: campaigns/<campaign>/inputs/player_input.txt)",
+        help="Path to player input text file (use this OR --player-input). Example: campaigns/<campaign>/inputs/player_input.txt",
     )
     packet_parser.add_argument("--label", help="Optional label for output file name")
     packet_parser.set_defaults(func=cmd_build_packet)

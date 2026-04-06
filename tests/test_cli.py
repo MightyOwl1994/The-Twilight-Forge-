@@ -41,6 +41,22 @@ def test_parser_requires_one_player_input_form() -> None:
     assert args.player_input_file is None
 
 
+def test_parser_rejects_both_player_input_forms() -> None:
+    parser = build_parser()
+    with pytest.raises(SystemExit):
+        parser.parse_args(
+            [
+                "build-packet",
+                "--campaign",
+                "demo",
+                "--player-input",
+                "Inline content",
+                "--player-input-file",
+                "input.txt",
+            ]
+        )
+
+
 def test_main_returns_clean_error_for_missing_player_input_file(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(
         "sys.argv",
