@@ -6,6 +6,7 @@ from pathlib import Path
 
 import pytest
 
+from rp_foundry import cli
 from rp_foundry.cli import _read_player_input, build_parser
 
 
@@ -38,3 +39,18 @@ def test_parser_requires_one_player_input_form() -> None:
     )
     assert args.player_input == "Inline content"
     assert args.player_input_file is None
+
+
+def test_main_returns_clean_error_for_missing_player_input_file(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(
+        "sys.argv",
+        [
+            "rp-foundry",
+            "build-packet",
+            "--campaign",
+            "example_campaign",
+            "--player-input-file",
+            "does-not-exist.txt",
+        ],
+    )
+    assert cli.main() == 2

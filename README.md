@@ -76,6 +76,7 @@ Behavior:
 - Writes `campaigns/<campaign>/outputs/packet-<label or timestamp>.txt`.
 - If neither input option is provided, the CLI shows a clear error.
 - If both are provided together, the CLI shows a clear conflict error.
+- If a file path is wrong, the CLI shows a beginner-friendly `Error: ...` message (no Python traceback).
 
 ### 2) Log a scene
 
