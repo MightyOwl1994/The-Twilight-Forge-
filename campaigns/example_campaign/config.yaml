@@ -1,0 +1,4 @@
+campaign_name: "Example Campaign"
+description: "Generic scaffold for rp-foundry"
+defaults:
+  packet_max_optional_chunks: 3
