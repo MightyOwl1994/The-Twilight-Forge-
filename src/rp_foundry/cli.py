@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import sys
 from pathlib import Path
 
 from rp_foundry.engine import build_packet, draft_update, log_scene
@@ -18,12 +19,45 @@ def _read_scene_text(scene_file: Path | None, scene_text: str | None) -> str:
     raise ValueError("Provide either --scene-file or --scene-text.")
 
 
+def _read_player_input(player_input: str | None, player_input_file: str | None) -> str:
+    """Resolve player input from either raw text or file path.
+
+    Raises:
+        ValueError: if both or neither input forms are provided.
+        FileNotFoundError: if a file path is provided but missing.
+    """
+    if player_input and player_input_file:
+        raise ValueError("Use only one of --player-input or --player-input-file, not both.")
+
+    if player_input:
+        text = player_input.strip()
+        if not text:
+            raise ValueError("--player-input was provided but empty. Add text or use --player-input-file.")
+        return text
+
+    if player_input_file:
+        file_path = Path(player_input_file)
+        if not file_path.exists():
+            raise FileNotFoundError(
+                f"Player input file not found: {file_path}. "
+                "Use --player-input for inline text or provide a valid file path."
+            )
+        text = read_text(file_path)
+        if not text:
+            raise ValueError(
+                f"Player input file is empty: {file_path}. "
+                "Add content to the file or use --player-input with inline text."
+            )
+        return text
+
+    raise ValueError("Missing player input. Provide --player-input or --player-input-file.")
+
+
 def cmd_build_packet(args: argparse.Namespace) -> int:
     """CLI handler for build-packet."""
     paths = resolve_campaign_paths(args.campaign)
     config = read_yaml(paths.config)
-    input_path = Path(args.player_input_file)
-    player_input = read_text(input_path)
+    player_input = _read_player_input(args.player_input, args.player_input_file)
 
     result = build_packet(paths=paths, player_input=player_input, packet_label=args.label)
     print(f"Built packet: {result.path}")
@@ -92,10 +126,14 @@ def build_parser() -> argparse.ArgumentParser:
 
     packet_parser = subparsers.add_parser("build-packet", help="Build a curated scene packet")
     packet_parser.add_argument("--campaign", required=True, help="Campaign folder name")
-    packet_parser.add_argument(
+    input_group = packet_parser.add_mutually_exclusive_group(required=True)
+    input_group.add_argument(
+        "--player-input",
+        help="Raw player input text (use this OR --player-input-file). Example: --player-input \"I interrogate the courier\"",
+    )
+    input_group.add_argument(
         "--player-input-file",
-        required=True,
-        help="Path to player input text file (usually under campaign inputs)",
+        help="Path to player input text file (use this OR --player-input). Example: campaigns/<campaign>/inputs/player_input.txt",
     )
     packet_parser.add_argument("--label", help="Optional label for output file name")
     packet_parser.set_defaults(func=cmd_build_packet)
@@ -125,7 +163,11 @@ def main() -> int:
     """CLI program entrypoint."""
     parser = build_parser()
     args = parser.parse_args()
-    return args.func(args)
+    try:
+        return args.func(args)
+    except (ValueError, FileNotFoundError) as exc:
+        print(f"Error: {exc}", file=sys.stderr)
+        return 2
 
 
 if __name__ == "__main__":

@@ -51,16 +51,35 @@ campaigns/
 
 ### 1) Build a packet
 
+You can provide player input in **either** of two ways:
+
+- Inline text with `--player-input`
+- A text file with `--player-input-file`
+
+`build-packet` requires **exactly one** of those options.
+
 ```bash
 rp-foundry build-packet \
   --campaign example_campaign \
   --player-input-file campaigns/example_campaign/inputs/player_input.txt
 ```
 
+Inline text example:
+
+```bash
+rp-foundry build-packet \
+  --campaign example_campaign \
+  --player-input "I want to find the courier and decide whether to relight the summit beacon."
+```
+
 Behavior:
 - Always includes `current_state.txt`, `style_bible.txt`, and `campaign_bible.txt`.
 - Uses deterministic keyword overlap against player input to select optional chunks.
 - Writes `campaigns/<campaign>/outputs/packet-<label or timestamp>.txt`.
+- If neither input option is provided, the CLI shows a clear error.
+- If both are provided together, the CLI shows a clear conflict error.
+- If a file path is wrong, the CLI shows a beginner-friendly `Error: ...` message (no Python traceback).
+- If the file exists but is empty, the CLI asks you to add content or use `--player-input`.
 
 ### 2) Log a scene
 
