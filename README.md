@@ -12,6 +12,23 @@ It is intentionally simple and file-based so humans stay in control of review an
 - Draft suggested canon/state update notes (without auto-applying changes).
 - Report campaign health via a status command.
 
+## Project Documentation
+
+To keep context easy to recover between sessions, this repo uses a small docs set in `docs/`:
+
+- `docs/PROJECT_STATE.md` — Quick snapshot of where the project is right now (scope, capabilities, limits, direction).
+- `docs/DECISIONS.md` — Short decision log (what we decided, why, and tradeoffs).
+- `docs/CHANGELOG.md` — Session-level “what changed” history.
+- `docs/NEXT_STEPS.md` — Active short to-do list and immediate priorities.
+
+When to update each doc:
+- Update **PROJECT_STATE** when the project’s current scope or direction changes.
+- Update **DECISIONS** when you make (or reject) an important technical/product choice.
+- Update **CHANGELOG** at the end of any work session with meaningful changes.
+- Update **NEXT_STEPS** whenever priorities shift or tasks are completed.
+
+Keep these docs practical and lightweight—this is not meant to become a big wiki.
+
 ## Requirements
 
 - Python 3.11+
