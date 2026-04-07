@@ -1,7 +1,161 @@
-# rp-foundry
+# The Twilight Forge (`rp-foundry`)
 
 `rp-foundry` is a small, setting-agnostic Python CLI for building curated roleplay scene packets.
 It is intentionally simple and file-based so humans stay in control of review and canon updates.
+
+## First-run walkthrough (Windows, beginner-friendly)
+
+This is a literal first run you can copy step-by-step in **Windows PowerShell**.
+
+### 0) What you should have first
+
+- Python 3.11+ installed.
+- Git installed.
+- A PowerShell window open.
+
+### 1) Clone the repo
+
+```powershell
+git clone https://github.com/<your-org-or-user>/The-Twilight-Forge-.git
+```
+
+### 2) Open the repo folder in a terminal
+
+```powershell
+cd .\The-Twilight-Forge-
+```
+
+If you are not sure where you are, run:
+
+```powershell
+pwd
+```
+
+### 3) Create a virtual environment (Windows)
+
+```powershell
+py -3.11 -m venv .venv
+```
+
+If `py` does not work on your machine, try:
+
+```powershell
+python -m venv .venv
+```
+
+### 4) Activate the virtual environment in PowerShell
+
+```powershell
+.\.venv\Scripts\Activate.ps1
+```
+
+After activation, your prompt usually shows `(.venv)` on the left.
+
+### 5) Install the project
+
+```powershell
+python -m pip install -e .[dev]
+```
+
+### 6) Prepare your first input file
+
+Open this file and add at least one line of player intent text:
+
+- `campaigns/example_campaign/inputs/player_input.txt`
+
+Example content:
+
+```text
+I want to find the courier and decide whether to relight the summit beacon.
+```
+
+### 7) Run the CLI commands in this exact order (first test)
+
+1. Check campaign status first:
+
+```powershell
+rp-foundry status --campaign example_campaign
+```
+
+2. Build your first packet (using a fixed label so the output filename is predictable):
+
+```powershell
+rp-foundry build-packet --campaign example_campaign --player-input-file campaigns/example_campaign/inputs/player_input.txt --label firsttest
+```
+
+3. Log a scene (replace the scene file path with your own text file):
+
+```powershell
+rp-foundry log-scene --campaign example_campaign --scene-file path\\to\\scene_output.txt --source-packet packet-firsttest.txt
+```
+
+4. Draft a suggested update from that scene:
+
+```powershell
+rp-foundry draft-update --campaign example_campaign --scene-file path\\to\\scene_output.txt
+```
+
+5. Run status again to confirm outputs/logs changed:
+
+```powershell
+rp-foundry status --campaign example_campaign
+```
+
+### 8) What files/folders to expect
+
+Before running commands (typical):
+
+```text
+campaigns/
+  example_campaign/
+    config.yaml
+    inputs/
+      current_state.txt
+      style_bible.txt
+      campaign_bible.txt
+      lore_appendix.txt (optional)
+      roster_threads.txt (optional)
+      open_threads.txt (optional)
+      recent_summary.txt (optional)
+      player_input.txt (optional convenience input file)
+    outputs/
+    logs/
+```
+
+After running the first test above:
+
+```text
+campaigns/
+  example_campaign/
+    outputs/
+      packet-firsttest.txt
+      draft-update-*.txt
+    logs/
+      scene-log-*.txt
+```
+
+(Exact timestamped filenames vary.)
+
+### 9) Troubleshooting (common beginner mistakes)
+
+- **"command not found"**
+  - If `rp-foundry` is not recognized, your virtual environment is usually not active, or install did not finish.
+  - Re-run:
+    - `.\\.venv\\Scripts\\Activate.ps1`
+    - `python -m pip install -e .[dev]`
+
+- **venv not activated**
+  - If you do not see `(.venv)` in the prompt, run:
+    - `.\\.venv\\Scripts\\Activate.ps1`
+
+- **wrong file path**
+  - Keep paths relative to repo root.
+  - Example correct player input path:
+    - `campaigns/example_campaign/inputs/player_input.txt`
+
+- **empty player input file**
+  - `build-packet` needs real text in the file.
+  - Add at least one non-empty line to `player_input.txt`, or use `--player-input "..."`.
 
 ## Version 1 goals
 
@@ -33,7 +187,7 @@ Keep these docs practical and lightweight—this is not meant to become a big wi
 
 - Python 3.11+
 
-## Installation
+## Installation (quick reference)
 
 From repository root:
 
@@ -64,7 +218,7 @@ campaigns/
     logs/
 ```
 
-## CLI usage
+## CLI usage (reference)
 
 ### 1) Build a packet
 
