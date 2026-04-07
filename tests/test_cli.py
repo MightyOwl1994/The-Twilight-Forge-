@@ -199,3 +199,107 @@ def test_main_build_packet_missing_required_campaign_inputs_is_clean_error(
     assert "style_bible.txt" in stderr
     assert "campaign_bible.txt" in stderr
     assert "Traceback" not in stderr
+
+
+def test_main_log_scene_missing_scene_input_is_clean_error(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    monkeypatch.setattr(
+        "sys.argv",
+        ["rp-foundry", "log-scene", "--campaign", "example_campaign"],
+    )
+
+    assert cli.main() == 2
+    stderr = capsys.readouterr().err
+    assert "Error: Provide either --scene-file or --scene-text." in stderr
+    assert "Traceback" not in stderr
+
+
+def test_main_log_scene_invalid_scene_file_path_is_clean_error(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    monkeypatch.setattr(
+        "sys.argv",
+        [
+            "rp-foundry",
+            "log-scene",
+            "--campaign",
+            "example_campaign",
+            "--scene-file",
+            "does-not-exist-scene.txt",
+        ],
+    )
+
+    assert cli.main() == 2
+    stderr = capsys.readouterr().err
+    assert "No such file or directory" in stderr
+    assert "does-not-exist-scene.txt" in stderr
+    assert "Traceback" not in stderr
+
+
+def test_main_log_scene_empty_scene_file_still_logs_scene(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    scene_file = tmp_path / "empty-scene.txt"
+    scene_file.write_text("", encoding="utf-8")
+
+    monkeypatch.setattr(
+        "sys.argv",
+        [
+            "rp-foundry",
+            "log-scene",
+            "--campaign",
+            "example_campaign",
+            "--scene-file",
+            str(scene_file),
+        ],
+    )
+
+    assert cli.main() == 0
+    out = capsys.readouterr().out
+    assert "Logged scene:" in out
+
+
+def test_main_draft_update_invalid_scene_file_path_is_clean_error(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    monkeypatch.setattr(
+        "sys.argv",
+        [
+            "rp-foundry",
+            "draft-update",
+            "--campaign",
+            "example_campaign",
+            "--scene-file",
+            "does-not-exist-scene.txt",
+        ],
+    )
+
+    assert cli.main() == 2
+    stderr = capsys.readouterr().err
+    assert "No such file or directory" in stderr
+    assert "does-not-exist-scene.txt" in stderr
+    assert "Traceback" not in stderr
+
+
+def test_main_draft_update_empty_scene_file_still_creates_draft(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    scene_file = tmp_path / "empty-scene.txt"
+    scene_file.write_text("", encoding="utf-8")
+
+    monkeypatch.setattr(
+        "sys.argv",
+        [
+            "rp-foundry",
+            "draft-update",
+            "--campaign",
+            "example_campaign",
+            "--scene-file",
+            str(scene_file),
+        ],
+    )
+
+    assert cli.main() == 0
+    out = capsys.readouterr().out
+    assert "Created draft update:" in out
