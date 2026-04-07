@@ -303,3 +303,39 @@ def test_main_draft_update_empty_scene_file_still_creates_draft(
     assert cli.main() == 0
     out = capsys.readouterr().out
     assert "Created draft update:" in out
+
+
+def test_main_status_requires_campaign_flag_with_no_traceback(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    monkeypatch.setattr("sys.argv", ["rp-foundry", "status"])
+
+    with pytest.raises(SystemExit) as exc_info:
+        cli.main()
+
+    assert exc_info.value.code == 2
+    stderr = capsys.readouterr().err
+    assert "the following arguments are required: --campaign" in stderr
+    assert "Traceback" not in stderr
+
+
+def test_main_status_missing_inputs_folder_reports_required_files_cleanly(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    campaign_root = tmp_path / "campaigns" / "no_inputs_dir"
+    campaign_root.mkdir(parents=True)
+    (campaign_root / "config.yaml").write_text("name: no_inputs_dir\n", encoding="utf-8")
+
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setattr(
+        "sys.argv",
+        ["rp-foundry", "status", "--campaign", "no_inputs_dir"],
+    )
+
+    assert cli.main() == 1
+    captured = capsys.readouterr()
+    assert "Missing required inputs:" in captured.out
+    assert "  - current_state.txt" in captured.out
+    assert "  - style_bible.txt" in captured.out
+    assert "  - campaign_bible.txt" in captured.out
+    assert "Traceback" not in captured.err
