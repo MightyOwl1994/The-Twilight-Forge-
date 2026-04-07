@@ -4,7 +4,6 @@ Practical, near-term to-do list. Keep this short and active.
 
 ## Current priorities
 - Improve beginner onboarding (first-run walkthrough in README)
-- Add one or two focused CLI status edge-case tests (for example missing campaign path / missing folder behaviors)
 - Keep CLI error wording beginner-friendly and stable as behavior evolves
 
 ## Nice-to-have (later)

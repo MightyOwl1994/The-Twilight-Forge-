@@ -3,6 +3,9 @@
 Simple session-level history. Keep entries short.
 
 ## 2026-04-07
+- Added a focused `status` CLI edge-case test batch for missing `--campaign` usage and a missing `inputs/` folder, including clear required-file reporting and no traceback for expected user mistakes.
+
+## 2026-04-07
 - Added a small non-`build-packet` CLI edge-case test batch for `log-scene` and `draft-update` (missing scene input, invalid scene file paths, empty scene-file behavior, and clean no-traceback user errors).
 
 ## 2026-04-07
