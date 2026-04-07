@@ -3,6 +3,8 @@
 `rp-foundry` is a small, setting-agnostic Python CLI for building curated roleplay scene packets.
 It is intentionally simple and file-based so humans stay in control of review and canon updates.
 
+The repo includes two sample campaigns: `example_campaign` and `frontier_watch`.
+
 ## First-run walkthrough (Windows, beginner-friendly)
 
 This is a literal first run you can copy step-by-step in **Windows PowerShell**.
