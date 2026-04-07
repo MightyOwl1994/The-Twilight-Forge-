@@ -4,8 +4,8 @@ Practical, near-term to-do list. Keep this short and active.
 
 ## Current priorities
 - Improve beginner onboarding (first-run walkthrough in README)
-- Add more CLI tests for edge-case input handling
-- Tighten wording of CLI error messages where confusion is likely
+- Add a few focused CLI tests for non-`build-packet` edge cases (for example `log-scene` / `draft-update` missing input forms)
+- Keep CLI error wording beginner-friendly and stable as behavior evolves
 
 ## Nice-to-have (later)
 - Configurable selection strategy options
